@@ -1,0 +1,16 @@
+plugins {
+    id 'java'
+}
+
+group 'ru.ithex'
+
+sourceCompatibility = 11
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.10.0'
+
+}
