@@ -23,7 +23,7 @@ public class ResponseWrapperDTO<T> {
         return new ResponseWrapperDTO(data, null);
     }
 
-    public static ResponseWrapperDTO ok(BaseError error){
+    public static ResponseWrapperDTO error(BaseError error){
         return new ResponseWrapperDTO(null, error);
     }
 }
