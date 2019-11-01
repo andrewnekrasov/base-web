@@ -8,9 +8,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.ithex.baseweb.model.dto.response.ResponseWrapperDTO;
 import ru.ithex.baseweb.model.dto.response.error.InternalServerError;
 
-@RestControllerAdvice
-public class BaseControllerAdvice {
-
+public abstract class BaseControllerAdvice {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseWrapperDTO baseHandle(Exception e, HttpRequest request) {
