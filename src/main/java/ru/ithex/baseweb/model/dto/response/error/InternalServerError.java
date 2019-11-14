@@ -5,6 +5,6 @@ import java.util.Date;
 public class InternalServerError extends BaseError{
 
     public InternalServerError(String description) {
-        super("INTERNAL_SERVER_ERROR", description, new Date());
+        super(ErrorType.INTERNAL_SERVER_ERROR, description, new Date());
     }
 }
