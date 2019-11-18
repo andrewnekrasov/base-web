@@ -18,7 +18,7 @@ public class ReDoc {
         this.title = title;
     }
 
-    @GetMapping("/documentation")
+    @GetMapping("/docs")
     public String documentation(
             @RequestHeader("host") String host,
             Model model){
