@@ -5,6 +5,6 @@ import java.util.Date;
 public class BadRequestError extends BaseError{
 
     public BadRequestError(String description) {
-        super("BAD_REQUEST_ERROR", description, new Date());
+        super(ErrorType.BAD_REQUEST_ERROR, description, new Date());
     }
 }
