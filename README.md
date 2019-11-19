@@ -1,4 +1,3 @@
-
 # Описание использования модуля
 
 > [1. Установка](#installation)
@@ -74,56 +73,56 @@ public ResponseWrapperDTO baseHandle(InvalidDataAccessResourceUsageException e, 
 > Пример:
 
 ```java
-	public class OkvedExportDTO {
-	    private final String code;
-	    private final String description;
+public class OkvedExportDTO {
+    private final String code;
+    private final String description;
 
-	    public OkvedExportDTO(String code, String description) {
-	        this.code = code;
-	        this.description = description;
-	    }
+    public OkvedExportDTO(String code, String description) {
+        this.code = code;
+        this.description = description;
+    }
 
-	    public String getCode() {
-	        return code;
-	    }
+    public String getCode() {
+        return code;
+    }
 
-	    public String getDescription() {
-	        return description;
-	    }
-	}
+    public String getDescription() {
+        return description;
+    }
+}
 
-	@Service
-	public class OkvedExportService implements ExportCSV<OkvedExportDTO>, ExportExcel<OkvedExportDTO> {
-	    private final String CODE = "Код";
-	    private final String DESCRIPTION = "Описание";
+@Service
+public class OkvedExportService implements ExportCSV<OkvedExportDTO>, ExportExcel<OkvedExportDTO> {
+    private final String CODE = "Код";
+    private final String DESCRIPTION = "Описание";
 
-	    private final String[] HEADERS = new String[] {CODE, DESCRIPTION};
+    private final String[] HEADERS = new String[] {CODE, DESCRIPTION};
 
-	    private final String CHARSET = "CP1251";
+    private final String CHARSET = "CP1251";
 
-	    private final char DELIMITER = ';';
+    private final char DELIMITER = ';';
 
 
-	    @Override
-	    public String[] getRow(OkvedExportDTO data) {
-	        return new String[] {data.getCode(), data.getDescription()};
-	    }
+    @Override
+    public String[] getRow(OkvedExportDTO data) {
+        return new String[] {data.getCode(), data.getDescription()};
+    }
 
-	    @Override
-	    public String[] getHeaders() {
-	        return HEADERS;
-	    }
+    @Override
+    public String[] getHeaders() {
+        return HEADERS;
+    }
 
-	    @Override
-	    public char getDelimiter() {
-	        return DELIMITER;
-	    }
+    @Override
+    public char getDelimiter() {
+        return DELIMITER;
+    }
 
-	    @Override
-	    public String getCharsetName() {
-	        return CHARSET;
-	    }
-	}
+    @Override
+    public String getCharsetName() {
+        return CHARSET;
+    }
+}
 ```
 
 Для выгрузки файлов в byte[] использовать функции printAllToCsv и printAllToExcel соответственно.
@@ -131,17 +130,17 @@ public ResponseWrapperDTO baseHandle(InvalidDataAccessResourceUsageException e, 
 > Пример функций контроллера:
 
 ```java
-	@GetMapping(value = "/csv", produces = "text/csv")
-    public ResponseEntity<byte[]> getCsv(){
-        return ResponseEntity.ok()
-                .header("Content-Disposition","attachment; filename=\"file.csv\"")
-                .body(okvedExportService.printAllToCsv(..));
-    }
+@GetMapping(value = "/csv", produces = "text/csv")
+public ResponseEntity<byte[]> getCsv(){
+    return ResponseEntity.ok()
+            .header("Content-Disposition","attachment; filename=\"file.csv\"")
+            .body(okvedExportService.printAllToCsv(..));
+}
 
-    @GetMapping(value = "/excel", produces = "application/vnd.ms-excel")
-    public ResponseEntity<byte[]> getOkvedsExcel() {
-        return ResponseEntity.ok()
-                .header("Content-Disposition", "attachment; filename=\"file.xls\"")
-                .body(okvedExportService.printAllToExcel(..));
-    }
+@GetMapping(value = "/excel", produces = "application/vnd.ms-excel")
+public ResponseEntity<byte[]> getOkvedsExcel() {
+    return ResponseEntity.ok()
+            .header("Content-Disposition", "attachment; filename=\"file.xls\"")
+            .body(okvedExportService.printAllToExcel(..));
+}
 ```
