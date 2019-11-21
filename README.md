@@ -1,24 +1,40 @@
 # Описание использования модуля
 
-> [1. Установка](#installation)
+> [1. Установка](#1-установка)
 
-> [2. Установить имя проекта](#set-project-name)
+> [2. Установить имя проекта](#2-установить-имя-проекта)
 
-> [3. Добавить сканирование пакетов модуля Spring'ом](#add-component-scan)
+> [3. Добавить сканирование пакетов модуля Spring'ом](#3-добавить-сканирование-пакетов-модуля-springом)
 
-> [4. Расширить класс BaseControllerAdvice](#extends-advice)
+> [4. Расширить класс BaseControllerAdvice](#4-расширить-класс-basecontrolleradvice)
 
-> [5. Расширить аспекты](#extends-aspects)
+> [5. Расширить аспекты](#5-расширить-аспекты)
 
-> [6. Возвращаемый тип контроллеров](#response-type)
+> [6. Возвращаемый тип контроллеров](#6-возвращаемый-тип-контроллеров)
 
-> [7. Выгрузка в csv или excel](#excel-csv)
+> [7. Выгрузка в csv или excel](#7-выгрузка-в-csv-или-excel)
 
 ---
 
 ## 1. Установка
 
-Добавить проект base-web как модуль в новый проект микросервиса (git clone в корневом каталоге) или как зависимость в build.gadle.
+Добавить base-web как подмодуль в новый проект микросервиса 
+
+```git
+git submodule add <.../base-web.git>
+```
+
+Подключить использование подмодуля в файле settings.gradle
+
+```gradle
+include 'base-web'
+```
+
+Добавить подмодуль в dependency проекта gradle.build
+
+```gradle
+compile project(':base-web')
+```
 
 ---
 
@@ -31,6 +47,10 @@
 ## 3. Добавить сканирование пакетов модуля Spring'ом
 
 Добавить в класс Application (main class) в аннотацию @ComponentScan корневой пакет модуля base-web.
+
+```java
+@ComponentScan({"ru.ithex.baseweb"})
+```
 
 ---
 
@@ -54,9 +74,41 @@ public ResponseWrapperDTO baseHandle(InvalidDataAccessResourceUsageException e, 
 
 ## 5. Расширить аспекты
 
-В проекте микросервиса расширикь классы ...aspect.BaseControllerAspect и ...aspect.BaseControllerExceptionAspect, 
-переопределив функции-pointcut'ы controllersPackagePointcut и controllersAdvicePackagePointcut и указав соответствующие пакеты контроллеров 
-например "execution(* ru.example.controller.*.*(..))" и "execution(* ru.example.controller.advice.*.*(..))" соответственно.
+- Добавить в dependency проекта AspectJ
+
+```gradle
+implementation 'org.aspectj:aspectjrt:1.9.4'
+```
+
+- Расширить класс ...aspect.BaseControllerAspect, переопределив функцию-pointcut controllersPackagePointcut
+
+> Пример
+
+```java
+@Aspect
+@Component
+public class ControllerAspect extends BaseControllerAspect {
+    public ControllerAspect(ObjectMapper objectMapper) {
+        super(objectMapper);
+    }
+
+    @Pointcut("execution(* ru.example.controller.*.*(..))")
+    public void controllersPackagePointcut(){}
+}
+```
+
+- Расширить класс ...aspect.BaseControllerExceptionAspect, переопределив функцию-pointcut controllersAdvicePackagePointcut
+
+> Пример
+
+```java
+@Aspect
+@Component
+public class ControllerExceptionLogger extends BaseControllerExceptionAspect {
+    @Pointcut("execution(* ru.example.controller.advice.*.*(..))")
+    public void controllersAdvicePackagePointcut(){}
+}
+```
 
 ---
 
