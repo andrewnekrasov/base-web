@@ -25,15 +25,15 @@ public abstract class BaseControllerAspect {
     }
 
     @Pointcut()
-    public void controllersPackagePointcut(){}
+    public abstract void controllersPackagePointcut();
 
     @Before("controllersPackagePointcut()")
     private void controllerAspect(JoinPoint joinPoint) {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-        StringBuilder stringBuilder = new StringBuilder(String.format("Request %s.%s(..):\n", signature.getDeclaringTypeName(), signature.getName()));
+        StringBuilder stringBuilder = new StringBuilder(String.format("Request %s.%s(..):", signature.getDeclaringTypeName(), signature.getName()));
         String[] paramNames = signature.getParameterNames();
         for (int paramNamesCounter = 0; paramNamesCounter < paramNames.length; paramNamesCounter++){
-            stringBuilder.append(String.format("    -> %s=%s\n", paramNames[paramNamesCounter], readArgValue(joinPoint.getArgs()[paramNamesCounter])));
+            stringBuilder.append(String.format("\n    -> %s=%s", paramNames[paramNamesCounter], readArgValue(joinPoint.getArgs()[paramNamesCounter])));
         }
         LOGGER.info(stringBuilder.toString());
         Arrays.stream(joinPoint.getArgs()).filter(o -> o instanceof Validation).map(o -> (Validation) o).forEach(Validation::validate);
