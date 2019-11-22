@@ -14,6 +14,8 @@
 
 > [7. Выгрузка в csv или excel](#7-выгрузка-в-csv-или-excel)
 
+> [8. Трассировка](#8-трассировка)
+
 ---
 
 ## 1. Установка
@@ -196,3 +198,23 @@ public ResponseEntity<byte[]> getOkvedsExcel() {
             .body(okvedExportService.printAllToExcel(..));
 }
 ```
+
+---
+
+## 8. Трассировка
+
+- Расширить класс ...aspect.BaseExecutionTracingAspect, переопределив функцию-pointcut mainPackagePointcut
+
+> Пример
+
+```java
+@Aspect
+@Component
+public class TracingAspect extends BaseExecutionTracingAspect {
+    @Override
+    @Pointcut("within(ru.example..*)")
+    protected void mainPackagePointcut() {}
+}
+```
+
+- В файле application.properties задать свойство app.execution.tracing = true
