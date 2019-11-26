@@ -8,11 +8,12 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import ru.ithex.baseweb.exception.RestException;
-import ru.ithex.baseweb.exception.RestServiceSystemException;
+import ru.ithex.baseweb.exception.*;
 import ru.ithex.baseweb.model.dto.response.ResponseWrapperDTO;
+import ru.ithex.baseweb.model.dto.response.error.AuthenticationError;
 import ru.ithex.baseweb.model.dto.response.error.BadRequestError;
 import ru.ithex.baseweb.model.dto.response.error.InternalServerError;
+import ru.ithex.baseweb.model.dto.response.error.ValidationError;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -20,7 +21,31 @@ public abstract class BaseControllerAdvice {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseWrapperDTO baseHandle(Exception e, HttpServletRequest request) {
+        return ResponseWrapperDTO.error(new InternalServerError("Системная ошибка."));
+    }
+
+    @ExceptionHandler(CustomAuthenticationException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ResponseWrapperDTO handle(CustomAuthenticationException e, HttpServletRequest request){
+        return ResponseWrapperDTO.error(new AuthenticationError(e.getMessage()));
+    }
+
+    @ExceptionHandler(CustomBadRequestException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseWrapperDTO handle(CustomBadRequestException e, HttpServletRequest request){
+        return ResponseWrapperDTO.error(new BadRequestError(e.getMessage()));
+    }
+
+    @ExceptionHandler(CustomInternalServerException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseWrapperDTO handle(CustomInternalServerException e, HttpServletRequest request){
         return ResponseWrapperDTO.error(new InternalServerError(e.getMessage()));
+    }
+
+    @ExceptionHandler(CustomValidationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseWrapperDTO handle(CustomValidationException e, HttpServletRequest request){
+        return ResponseWrapperDTO.error(new ValidationError(e.getMessage()));
     }
 
     @ExceptionHandler(NestedRuntimeException.class)
@@ -63,17 +88,5 @@ public abstract class BaseControllerAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseWrapperDTO handle(HttpMessageNotReadableException e, HttpServletRequest request){
         return ResponseWrapperDTO.error(new BadRequestError("Ошибочный формат передаваемых данных"));
-    }
-
-    @ExceptionHandler({ClassCastException.class})
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ResponseWrapperDTO baseHandle(ClassCastException e, HttpServletRequest request) {
-        return ResponseWrapperDTO.error(new InternalServerError("Системная ошибка."));
-    }
-
-    @ExceptionHandler({NullPointerException.class})
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ResponseWrapperDTO baseHandle(NullPointerException e, HttpServletRequest request) {
-        return ResponseWrapperDTO.error(new InternalServerError("Системная ошибка."));
     }
 }
